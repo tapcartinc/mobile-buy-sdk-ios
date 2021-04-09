@@ -31,6 +31,13 @@ extension Storefront {
 	open class CheckoutCreatePayloadQuery: GraphQL.AbstractQuery, GraphQLQuery {
 		public typealias Response = CheckoutCreatePayload
 
+        /// The checkout queue token.
+        @discardableResult
+        open func queueToken(alias: String? = nil) -> CheckoutCreatePayloadQuery {
+            addField(field: "queueToken", aliasSuffix: alias)
+            return self
+        }
+
 		/// The new checkout object. 
 		@discardableResult
 		open func checkout(alias: String? = nil, _ subfields: (CheckoutQuery) -> Void) -> CheckoutCreatePayloadQuery {
@@ -69,9 +76,16 @@ extension Storefront {
 
 		internal override func deserializeValue(fieldName: String, value: Any) throws -> Any? {
 			let fieldValue = value
-			switch fieldName {
-				case "checkout":
-				if value is NSNull { return nil }
+            switch fieldName {
+                case "queueToken":
+                if value is NSNull { return nil }
+                guard let value = value as? String else {
+                    throw SchemaViolationError(type: CheckoutCreatePayload.self, field: fieldName, value: fieldValue)
+                }
+                return value
+
+                case "checkout":
+                if value is NSNull { return nil }
 				guard let value = value as? [String: Any] else {
 					throw SchemaViolationError(type: CheckoutCreatePayload.self, field: fieldName, value: fieldValue)
 				}
@@ -93,6 +107,15 @@ extension Storefront {
 				throw SchemaViolationError(type: CheckoutCreatePayload.self, field: fieldName, value: fieldValue)
 			}
 		}
+
+        /// The checkout queue token.
+        open var queueToken: String? {
+            return internalGetQueueToken()
+        }
+
+        func internalGetQueueToken(alias: String? = nil) -> String? {
+            return field(field: "queueToken", aliasSuffix: alias) as! String?
+        }
 
 		/// The new checkout object. 
 		open var checkout: Storefront.Checkout? {

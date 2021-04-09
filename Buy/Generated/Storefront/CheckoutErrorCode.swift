@@ -143,6 +143,9 @@ extension Storefront {
 		/// Unable to apply discount. 
 		case unableToApply = "UNABLE_TO_APPLY"
 
+        /// Throttled during checkout.
+        case throttledDuringCheckout = "THROTTLED_DURING_CHECKOUT"
+
 		case unknownValue = ""
 	}
 }

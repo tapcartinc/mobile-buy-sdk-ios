@@ -81,10 +81,16 @@ extension Graph {
         ///     - session:    A `URLSession` to use for this client. If left blank, a session with a `default` configuration will be created.
         ///     - locale:     The buyer's current locale. Supported values are limited to locales available to your shop.
         ///
-        public init(shopDomain: String, apiKey: String, session: URLSession = URLSession(configuration: URLSessionConfiguration.default), locale: Locale? = nil) {
+        public init(shopDomain: String, apiKey: String, isUnstable: Bool = false, session: URLSession = URLSession(configuration: URLSessionConfiguration.default), locale: Locale? = nil) {
             
             let shopURL  = Client.urlFor(shopDomain)
-            self.apiURL  = Client.urlFor(shopDomain, path: "/api/\(Storefront.Schema.version)/graphql")
+
+            if isUnstable {
+                self.apiURL  = Client.urlFor(shopDomain, path: "/api/unstable/graphql")
+            } else {
+                self.apiURL  = Client.urlFor(shopDomain, path: "/api/\(Storefront.Schema.version)/graphql")
+            }
+
             self.cache   = Cache(shopName: shopDomain)
             self.session = session
             self.headers = [

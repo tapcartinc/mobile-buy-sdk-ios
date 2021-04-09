@@ -232,12 +232,16 @@ extension Storefront {
 		///     - input: The fields used to create a checkout.
 		///
 		@discardableResult
-		open func checkoutCreate(alias: String? = nil, input: CheckoutCreateInput, _ subfields: (CheckoutCreatePayloadQuery) -> Void) -> MutationQuery {
+        open func checkoutCreate(alias: String? = nil, input: CheckoutCreateInput, queueToken: String? = nil, _ subfields: (CheckoutCreatePayloadQuery) -> Void) -> MutationQuery {
 			var args: [String] = []
 
 			args.append("input:\(input.serialize())")
 
-			let argsString = "(\(args.joined(separator: ",")))"
+            if let queueToken = queueToken {
+                args.append("queueToken:\"\(queueToken)\"")
+            }
+
+            let argsString = "(\(args.joined(separator: ",")))"
 
 			let subquery = CheckoutCreatePayloadQuery()
 			subfields(subquery)
