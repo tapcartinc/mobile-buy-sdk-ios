@@ -1,5 +1,5 @@
 //
-//  OrderDisplayFinancialStatus.swift
+//  <%= directive.name %>.swift
 //  Buy
 //
 //  Created by Shopify.
@@ -25,23 +25,31 @@
 //
 
 import Foundation
+<% if import_graphql_support %>
+  import GraphQLSupport
+<% end %>
 
-extension Storefront {
-	public enum OrderDisplayFinancialStatus: String {
-		case authorized = "AUTHORIZED"
-
-		case paid = "PAID"
-
-		case partiallyPaid = "PARTIALLY_PAID"
-
-		case partiallyRefunded = "PARTIALLY_REFUNDED"
-
-		case pending = "PENDING"
-
-		case refunded = "REFUNDED"
-
-		case voided = "VOIDED"
-
-		case unknownValue = ""
-	}
+extension <%= schema_name %> {
+  open class <%= directive.classify_name %>Directive: GraphQL.AbstractDirective {
+    <%= swift_doc(directive) %>
+    public init(<%= swift_directive_arg_defs(directive) %>) {
+      <% unless directive.args.empty? %>
+        var args: [String] = []
+        <% directive.required_args.each do |arg| %>
+          args.append("<%= arg.name %>:<%= generate_build_input_code(arg.name, arg.type.unwrap_non_null) %>")
+        <% end %>
+        <% directive.optional_args.each do |arg| %>
+          if let <%= escape_reserved_word(arg.name) %> = <%= escape_reserved_word(arg.name) %> {
+            args.append("<%= arg.name %>:<%= generate_build_input_code(arg.name, arg.type) %>")
+          }
+        <% end %>
+        <% if directive.optional_args.empty? %>
+          let argsString = "(\(args.joined(separator: ",")))"
+        <% else %>
+          let argsString: String? = args.isEmpty ? nil : "(\(args.joined(separator: ",")))"
+        <% end %>
+      <% end %>
+      super.init(name: "<%= directive.name %>", args: argsString)
+    }
+  }
 }
