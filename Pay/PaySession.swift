@@ -95,6 +95,22 @@ public protocol PaySessionDelegate: class {
     ///     - paySession: The session that invoked the callback.
     ///
     func paySessionDidFinish(_ paySession: PaySession)
+    
+    /// This callback is invoked when an updated `PayCheckout` is returned with a currencyCode that does not match the `PaySession` currencyCode.
+    /// Resulting in the `PKPaymentAuthorizationController` presenting prices in the wrong currency.
+    ///
+    /// - parameters:
+    ///     - paySession: The session that invoked the callback.
+    ///     - controller: Controller which the controller can dismiss
+    ///     - newCurrencyCode: The new currencyCode from the `Storefront.Checkout`
+    ///     - checkout: The current checkout state
+    ///
+    /// - Important:
+    /// This a result of the Storefront API `checkoutShippingAddressUpdateV2` mutation changing the Checkout CurrencyCode from Shopify's new International Pricing.
+    /// - Note:
+    /// https://shopify.dev/custom-storefronts/products/international-pricing#create-a-checkout
+    ///
+    func paySession(_ paySession: PaySession, controller: PKPaymentAuthorizationController, didReceiveNewCurrencyCode newCurrencyCode: String, checkout: PayCheckout)
 }
 
 /// The `PaySession` coordinates the communication
@@ -277,6 +293,11 @@ extension PaySession: PKPaymentAuthorizationControllerDelegate {
             Log("Checkout doesn't require shipping. Updating address...")
             
             self.delegate?.paySession(self, didUpdateShippingAddress: payPostalAddress, checkout: self.checkout, provide: { updatedCheckout in
+                if let updatedCheckout = updatedCheckout, self.currency.currencyCode != updatedCheckout.currencyCode {
+                    self.delegate?.paySession(self, controller: controller, didReceiveNewCurrencyCode: updatedCheckout.currencyCode, checkout: updatedCheckout)
+                    return
+                }
+                
                 if let updatedCheckout = updatedCheckout {
                     self.checkout = updatedCheckout
                     
@@ -295,7 +316,11 @@ extension PaySession: PKPaymentAuthorizationControllerDelegate {
          ** should be enough to obtain rates.
          */
         self.delegate?.paySession(self, didRequestShippingRatesFor: payPostalAddress, checkout: self.checkout, provide: { updatedCheckout, shippingRates in
-
+            if let updatedCheckout = updatedCheckout, self.currency.currencyCode != updatedCheckout.currencyCode {
+                self.delegate?.paySession(self, controller: controller, didReceiveNewCurrencyCode: updatedCheckout.currencyCode, checkout: updatedCheckout)
+                return
+            }
+            
             /* ---------------------------------
              ** The delegate has an opportunity
              ** to return empty shipping rates
