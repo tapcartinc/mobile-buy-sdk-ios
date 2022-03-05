@@ -35,7 +35,7 @@ import PassKit
 /// object in the `provide` handler.
 ///
 @available(iOS 10.0, *)
-public protocol PaySessionDelegate: class {
+public protocol PaySessionDelegate: AnyObject {
 
     /// This callback is invoked if the user updates the `shippingContact` and the current address used for shipping is invalidated.
     /// You should make any necessary API calls to obtain shipping rates here and provide an array of `PayShippingRate` objects.
@@ -202,7 +202,7 @@ public class PaySession: NSObject {
         request.countryCode                   = currency.countryCode
         request.currencyCode                  = currency.currencyCode
         request.merchantIdentifier            = merchantID
-        request.requiredBillingContactFields = Set([PKContactField.emailAddress, .name, .phoneNumber, .postalAddress])
+        request.requiredBillingContactFields  = Set([PKContactField.emailAddress, .name, .phoneNumber, .postalAddress])
         request.requiredShippingContactFields = Set([PKContactField.emailAddress, .name, .phoneNumber, .postalAddress])
         request.supportedNetworks             = self.acceptedCardBrands.paymentNetworks
         request.merchantCapabilities          = [.capability3DS]

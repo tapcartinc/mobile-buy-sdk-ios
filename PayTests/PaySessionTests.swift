@@ -376,7 +376,7 @@ class PaySessionTests: XCTestCase {
             
             XCTAssertNil(checkout.shippingAddress)
             
-            provide(addressCheckout)
+            provide(addressCheckout, nil)
         }
         
         let e2 = self.expectation(description: "")
@@ -387,11 +387,11 @@ class PaySessionTests: XCTestCase {
         }
         
         let expectation = self.expectation(description: "")
-        MockAuthorizationController.invokeDidSelectShippingContact(shippingContact) { status, shippingMethods, summaryItems in
+        MockAuthorizationController.invokeDidSelectShippingContactHandler(shippingContact) { result in
             
-            XCTAssertEqual(status, .failure)
-            XCTAssertEqual(shippingMethods.count, 0)
-            XCTAssertEqual(summaryItems, [])
+            XCTAssertEqual(result.status, .failure)
+            XCTAssertEqual(result.shippingMethods.count, 0)
+            XCTAssertEqual(result.paymentSummaryItems, [])
             
             expectation.fulfill()
         }
