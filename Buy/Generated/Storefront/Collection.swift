@@ -66,7 +66,7 @@ extension Storefront {
 			return self
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		@discardableResult
 		open func id(alias: String? = nil) -> CollectionQuery {
 			addField(field: "id", aliasSuffix: alias)
@@ -74,39 +74,12 @@ extension Storefront {
 		}
 
 		/// Image associated with the collection. 
-		///
-		/// - parameters:
-		///     - maxWidth: Image width in pixels between 1 and 2048. This argument is deprecated: Use `maxWidth` on `Image.transformedSrc` instead.
-		///     - maxHeight: Image height in pixels between 1 and 2048. This argument is deprecated: Use `maxHeight` on `Image.transformedSrc` instead.
-		///     - crop: Crops the image according to the specified region. This argument is deprecated: Use `crop` on `Image.transformedSrc` instead.
-		///     - scale: Image size multiplier for high-resolution retina displays. Must be between 1 and 3. This argument is deprecated: Use `scale` on `Image.transformedSrc` instead.
-		///
 		@discardableResult
-		open func image(alias: String? = nil, maxWidth: Int32? = nil, maxHeight: Int32? = nil, crop: CropRegion? = nil, scale: Int32? = nil, _ subfields: (ImageQuery) -> Void) -> CollectionQuery {
-			var args: [String] = []
-
-			if let maxWidth = maxWidth {
-				args.append("maxWidth:\(maxWidth)")
-			}
-
-			if let maxHeight = maxHeight {
-				args.append("maxHeight:\(maxHeight)")
-			}
-
-			if let crop = crop {
-				args.append("crop:\(crop.rawValue)")
-			}
-
-			if let scale = scale {
-				args.append("scale:\(scale)")
-			}
-
-			let argsString: String? = args.isEmpty ? nil : "(\(args.joined(separator: ",")))"
-
+		open func image(alias: String? = nil, _ subfields: (ImageQuery) -> Void) -> CollectionQuery {
 			let subquery = ImageQuery()
 			subfields(subquery)
 
-			addField(field: "image", aliasSuffix: alias, args: argsString, subfields: subquery)
+			addField(field: "image", aliasSuffix: alias, subfields: subquery)
 			return self
 		}
 
@@ -143,6 +116,7 @@ extension Storefront {
 		///     - before: Returns the elements that come before the specified cursor.
 		///     - reverse: Reverse the order of the underlying list.
 		///
+		@available(*, deprecated, message:"The `metafields` field will be removed in the future in favor of using [aliases](https://graphql.org/learn/queries/#aliases) with the `metafield` field.\n")
 		@discardableResult
 		open func metafields(alias: String? = nil, namespace: String? = nil, first: Int32? = nil, after: String? = nil, last: Int32? = nil, before: String? = nil, reverse: Bool? = nil, _ subfields: (MetafieldConnectionQuery) -> Void) -> CollectionQuery {
 			var args: [String] = []
@@ -180,6 +154,15 @@ extension Storefront {
 			return self
 		}
 
+		/// The URL used for viewing the resource on the shop's Online Store. Returns 
+		/// `null` if the resource is currently not published to the Online Store sales 
+		/// channel. 
+		@discardableResult
+		open func onlineStoreUrl(alias: String? = nil) -> CollectionQuery {
+			addField(field: "onlineStoreUrl", aliasSuffix: alias)
+			return self
+		}
+
 		/// List of products in the collection. 
 		///
 		/// - parameters:
@@ -189,9 +172,10 @@ extension Storefront {
 		///     - before: Returns the elements that come before the specified cursor.
 		///     - reverse: Reverse the order of the underlying list.
 		///     - sortKey: Sort the underlying list by the given key.
+		///     - filters: Returns a subset of products matching all product filters.
 		///
 		@discardableResult
-		open func products(alias: String? = nil, first: Int32? = nil, after: String? = nil, last: Int32? = nil, before: String? = nil, reverse: Bool? = nil, sortKey: ProductCollectionSortKeys? = nil, _ subfields: (ProductConnectionQuery) -> Void) -> CollectionQuery {
+		open func products(alias: String? = nil, first: Int32? = nil, after: String? = nil, last: Int32? = nil, before: String? = nil, reverse: Bool? = nil, sortKey: ProductCollectionSortKeys? = nil, filters: [ProductFilter]? = nil, _ subfields: (ProductConnectionQuery) -> Void) -> CollectionQuery {
 			var args: [String] = []
 
 			if let first = first {
@@ -216,6 +200,10 @@ extension Storefront {
 
 			if let sortKey = sortKey {
 				args.append("sortKey:\(sortKey.rawValue)")
+			}
+
+			if let filters = filters {
+				args.append("filters:[\(filters.map{ "\($0.serialize())" }.joined(separator: ","))]")
 			}
 
 			let argsString: String? = args.isEmpty ? nil : "(\(args.joined(separator: ",")))"
@@ -244,7 +232,7 @@ extension Storefront {
 
 	/// A collection represents a grouping of products that a shop owner can create 
 	/// to organize them or make their shops easier to browse. 
-	open class Collection: GraphQL.AbstractResponse, GraphQLObject, HasMetafields, MetafieldParentResource, Node {
+	open class Collection: GraphQL.AbstractResponse, GraphQLObject, HasMetafields, MetafieldParentResource, Node, OnlineStorePublishable {
 		public typealias Query = CollectionQuery
 
 		internal override func deserializeValue(fieldName: String, value: Any) throws -> Any? {
@@ -293,6 +281,13 @@ extension Storefront {
 					throw SchemaViolationError(type: Collection.self, field: fieldName, value: fieldValue)
 				}
 				return try MetafieldConnection(fields: value)
+
+				case "onlineStoreUrl":
+				if value is NSNull { return nil }
+				guard let value = value as? String else {
+					throw SchemaViolationError(type: Collection.self, field: fieldName, value: fieldValue)
+				}
+				return URL(string: value)!
 
 				case "products":
 				guard let value = value as? [String: Any] else {
@@ -349,7 +344,7 @@ extension Storefront {
 			return field(field: "handle", aliasSuffix: alias) as! String
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		open var id: GraphQL.ID {
 			return internalGetId()
 		}
@@ -361,10 +356,6 @@ extension Storefront {
 		/// Image associated with the collection. 
 		open var image: Storefront.Image? {
 			return internalGetImage()
-		}
-
-		open func aliasedImage(alias: String) -> Storefront.Image? {
-			return internalGetImage(alias: alias)
 		}
 
 		func internalGetImage(alias: String? = nil) -> Storefront.Image? {
@@ -385,9 +376,12 @@ extension Storefront {
 		}
 
 		/// A paginated list of metafields associated with the resource. 
+		@available(*, deprecated, message:"The `metafields` field will be removed in the future in favor of using [aliases](https://graphql.org/learn/queries/#aliases) with the `metafield` field.\n")
 		open var metafields: Storefront.MetafieldConnection {
 			return internalGetMetafields()
 		}
+
+		@available(*, deprecated, message:"The `metafields` field will be removed in the future in favor of using [aliases](https://graphql.org/learn/queries/#aliases) with the `metafield` field.\n")
 
 		open func aliasedMetafields(alias: String) -> Storefront.MetafieldConnection {
 			return internalGetMetafields(alias: alias)
@@ -395,6 +389,17 @@ extension Storefront {
 
 		func internalGetMetafields(alias: String? = nil) -> Storefront.MetafieldConnection {
 			return field(field: "metafields", aliasSuffix: alias) as! Storefront.MetafieldConnection
+		}
+
+		/// The URL used for viewing the resource on the shop's Online Store. Returns 
+		/// `null` if the resource is currently not published to the Online Store sales 
+		/// channel. 
+		open var onlineStoreUrl: URL? {
+			return internalGetOnlineStoreUrl()
+		}
+
+		func internalGetOnlineStoreUrl(alias: String? = nil) -> URL? {
+			return field(field: "onlineStoreUrl", aliasSuffix: alias) as! URL?
 		}
 
 		/// List of products in the collection. 

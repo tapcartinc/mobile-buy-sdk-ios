@@ -186,7 +186,7 @@ extension Storefront {
 			return self
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		@discardableResult
 		open func id(alias: String? = nil) -> OrderQuery {
 			addField(field: "id", aliasSuffix: alias)
@@ -268,6 +268,7 @@ extension Storefront {
 		///     - before: Returns the elements that come before the specified cursor.
 		///     - reverse: Reverse the order of the underlying list.
 		///
+		@available(*, deprecated, message:"The `metafields` field will be removed in the future in favor of using [aliases](https://graphql.org/learn/queries/#aliases) with the `metafield` field.\n")
 		@discardableResult
 		open func metafields(alias: String? = nil, namespace: String? = nil, first: Int32? = nil, after: String? = nil, last: Int32? = nil, before: String? = nil, reverse: Bool? = nil, _ subfields: (MetafieldConnectionQuery) -> Void) -> OrderQuery {
 			var args: [String] = []
@@ -896,7 +897,7 @@ extension Storefront {
 			return field(field: "fulfillmentStatus", aliasSuffix: alias) as! Storefront.OrderFulfillmentStatus
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		open var id: GraphQL.ID {
 			return internalGetId()
 		}
@@ -932,9 +933,12 @@ extension Storefront {
 		}
 
 		/// A paginated list of metafields associated with the resource. 
+		@available(*, deprecated, message:"The `metafields` field will be removed in the future in favor of using [aliases](https://graphql.org/learn/queries/#aliases) with the `metafield` field.\n")
 		open var metafields: Storefront.MetafieldConnection {
 			return internalGetMetafields()
 		}
+
+		@available(*, deprecated, message:"The `metafields` field will be removed in the future in favor of using [aliases](https://graphql.org/learn/queries/#aliases) with the `metafield` field.\n")
 
 		open func aliasedMetafields(alias: String) -> Storefront.MetafieldConnection {
 			return internalGetMetafields(alias: alias)
