@@ -1,5 +1,5 @@
 //
-//  MoneyV2Connection.swift
+//  CartLineConnection.swift
 //  Buy
 //
 //  Created by Shopify.
@@ -27,14 +27,14 @@
 import Foundation
 
 extension Storefront {
-	/// An auto-generated type for paginating through multiple MoneyV2s. 
-	open class MoneyV2ConnectionQuery: GraphQL.AbstractQuery, GraphQLQuery {
-		public typealias Response = MoneyV2Connection
+	/// An auto-generated type for paginating through multiple CartLines. 
+	open class CartLineConnectionQuery: GraphQL.AbstractQuery, GraphQLQuery {
+		public typealias Response = CartLineConnection
 
 		/// A list of edges. 
 		@discardableResult
-		open func edges(alias: String? = nil, _ subfields: (MoneyV2EdgeQuery) -> Void) -> MoneyV2ConnectionQuery {
-			let subquery = MoneyV2EdgeQuery()
+		open func edges(alias: String? = nil, _ subfields: (CartLineEdgeQuery) -> Void) -> CartLineConnectionQuery {
+			let subquery = CartLineEdgeQuery()
 			subfields(subquery)
 
 			addField(field: "edges", aliasSuffix: alias, subfields: subquery)
@@ -43,7 +43,7 @@ extension Storefront {
 
 		/// Information to aid in pagination. 
 		@discardableResult
-		open func pageInfo(alias: String? = nil, _ subfields: (PageInfoQuery) -> Void) -> MoneyV2ConnectionQuery {
+		open func pageInfo(alias: String? = nil, _ subfields: (PageInfoQuery) -> Void) -> CartLineConnectionQuery {
 			let subquery = PageInfoQuery()
 			subfields(subquery)
 
@@ -52,37 +52,37 @@ extension Storefront {
 		}
 	}
 
-	/// An auto-generated type for paginating through multiple MoneyV2s. 
-	open class MoneyV2Connection: GraphQL.AbstractResponse, GraphQLObject {
-		public typealias Query = MoneyV2ConnectionQuery
+	/// An auto-generated type for paginating through multiple CartLines. 
+	open class CartLineConnection: GraphQL.AbstractResponse, GraphQLObject {
+		public typealias Query = CartLineConnectionQuery
 
 		internal override func deserializeValue(fieldName: String, value: Any) throws -> Any? {
 			let fieldValue = value
 			switch fieldName {
 				case "edges":
 				guard let value = value as? [[String: Any]] else {
-					throw SchemaViolationError(type: MoneyV2Connection.self, field: fieldName, value: fieldValue)
+					throw SchemaViolationError(type: CartLineConnection.self, field: fieldName, value: fieldValue)
 				}
-				return try value.map { return try MoneyV2Edge(fields: $0) }
+				return try value.map { return try CartLineEdge(fields: $0) }
 
 				case "pageInfo":
 				guard let value = value as? [String: Any] else {
-					throw SchemaViolationError(type: MoneyV2Connection.self, field: fieldName, value: fieldValue)
+					throw SchemaViolationError(type: CartLineConnection.self, field: fieldName, value: fieldValue)
 				}
 				return try PageInfo(fields: value)
 
 				default:
-				throw SchemaViolationError(type: MoneyV2Connection.self, field: fieldName, value: fieldValue)
+				throw SchemaViolationError(type: CartLineConnection.self, field: fieldName, value: fieldValue)
 			}
 		}
 
 		/// A list of edges. 
-		open var edges: [Storefront.MoneyV2Edge] {
+		open var edges: [Storefront.CartLineEdge] {
 			return internalGetEdges()
 		}
 
-		func internalGetEdges(alias: String? = nil) -> [Storefront.MoneyV2Edge] {
-			return field(field: "edges", aliasSuffix: alias) as! [Storefront.MoneyV2Edge]
+		func internalGetEdges(alias: String? = nil) -> [Storefront.CartLineEdge] {
+			return field(field: "edges", aliasSuffix: alias) as! [Storefront.CartLineEdge]
 		}
 
 		/// Information to aid in pagination. 

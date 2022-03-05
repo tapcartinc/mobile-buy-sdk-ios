@@ -26,17 +26,29 @@
 
 import Foundation
 
-/// An object with an ID to support global identification. 
+/// An object with an ID field to support global identification, in accordance 
+/// with the [Relay 
+/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+/// This interface is used by the 
+/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+/// queries. 
 public protocol Node {
 	var id: GraphQL.ID { get }
 }
 
 extension Storefront {
-	/// An object with an ID to support global identification. 
+	/// An object with an ID field to support global identification, in accordance 
+	/// with the [Relay 
+	/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+	/// This interface is used by the 
+	/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+	/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+	/// queries. 
 	open class NodeQuery: GraphQL.AbstractQuery, GraphQLQuery {
 		public typealias Response = Node
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		@discardableResult
 		open func id(alias: String? = nil) -> NodeQuery {
 			addField(field: "id", aliasSuffix: alias)
@@ -48,7 +60,13 @@ extension Storefront {
 			addField(field: "__typename")
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onAppliedGiftCard(subfields: (AppliedGiftCardQuery) -> Void) -> NodeQuery {
 			let subquery = AppliedGiftCardQuery()
@@ -57,7 +75,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onArticle(subfields: (ArticleQuery) -> Void) -> NodeQuery {
 			let subquery = ArticleQuery()
@@ -66,7 +90,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onBlog(subfields: (BlogQuery) -> Void) -> NodeQuery {
 			let subquery = BlogQuery()
@@ -75,7 +105,43 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
+		@discardableResult
+		open func onCart(subfields: (CartQuery) -> Void) -> NodeQuery {
+			let subquery = CartQuery()
+			subfields(subquery)
+			addInlineFragment(on: "Cart", subfields: subquery)
+			return self
+		}
+
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
+		@discardableResult
+		open func onCartLine(subfields: (CartLineQuery) -> Void) -> NodeQuery {
+			let subquery = CartLineQuery()
+			subfields(subquery)
+			addInlineFragment(on: "CartLine", subfields: subquery)
+			return self
+		}
+
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onCheckout(subfields: (CheckoutQuery) -> Void) -> NodeQuery {
 			let subquery = CheckoutQuery()
@@ -84,7 +150,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onCheckoutLineItem(subfields: (CheckoutLineItemQuery) -> Void) -> NodeQuery {
 			let subquery = CheckoutLineItemQuery()
@@ -93,7 +165,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onCollection(subfields: (CollectionQuery) -> Void) -> NodeQuery {
 			let subquery = CollectionQuery()
@@ -102,7 +180,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onComment(subfields: (CommentQuery) -> Void) -> NodeQuery {
 			let subquery = CommentQuery()
@@ -111,7 +195,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onExternalVideo(subfields: (ExternalVideoQuery) -> Void) -> NodeQuery {
 			let subquery = ExternalVideoQuery()
@@ -120,7 +210,28 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
+		@discardableResult
+		open func onLocation(subfields: (LocationQuery) -> Void) -> NodeQuery {
+			let subquery = LocationQuery()
+			subfields(subquery)
+			addInlineFragment(on: "Location", subfields: subquery)
+			return self
+		}
+
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onLocation(subfields: (LocationQuery) -> Void) -> NodeQuery {
 			let subquery = LocationQuery()
@@ -138,7 +249,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onMediaImage(subfields: (MediaImageQuery) -> Void) -> NodeQuery {
 			let subquery = MediaImageQuery()
@@ -147,7 +264,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onMetafield(subfields: (MetafieldQuery) -> Void) -> NodeQuery {
 			let subquery = MetafieldQuery()
@@ -156,7 +279,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onModel3d(subfields: (Model3dQuery) -> Void) -> NodeQuery {
 			let subquery = Model3dQuery()
@@ -165,7 +294,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onOrder(subfields: (OrderQuery) -> Void) -> NodeQuery {
 			let subquery = OrderQuery()
@@ -174,7 +309,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onPage(subfields: (PageQuery) -> Void) -> NodeQuery {
 			let subquery = PageQuery()
@@ -183,7 +324,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onPayment(subfields: (PaymentQuery) -> Void) -> NodeQuery {
 			let subquery = PaymentQuery()
@@ -192,7 +339,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onProduct(subfields: (ProductQuery) -> Void) -> NodeQuery {
 			let subquery = ProductQuery()
@@ -201,7 +354,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onProductOption(subfields: (ProductOptionQuery) -> Void) -> NodeQuery {
 			let subquery = ProductOptionQuery()
@@ -210,7 +369,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onProductVariant(subfields: (ProductVariantQuery) -> Void) -> NodeQuery {
 			let subquery = ProductVariantQuery()
@@ -219,7 +384,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onShopPolicy(subfields: (ShopPolicyQuery) -> Void) -> NodeQuery {
 			let subquery = ShopPolicyQuery()
@@ -228,7 +399,13 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID to support global identification. 
+		/// An object with an ID field to support global identification, in accordance 
+		/// with the [Relay 
+		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+		/// This interface is used by the 
+		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+		/// queries. 
 		@discardableResult
 		open func onVideo(subfields: (VideoQuery) -> Void) -> NodeQuery {
 			let subquery = VideoQuery()
@@ -238,7 +415,13 @@ extension Storefront {
 		}
 	}
 
-	/// An object with an ID to support global identification. 
+	/// An object with an ID field to support global identification, in accordance 
+	/// with the [Relay 
+	/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
+	/// This interface is used by the 
+	/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
+	/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
+	/// queries. 
 	open class UnknownNode: GraphQL.AbstractResponse, GraphQLObject, Node {
 		public typealias Query = NodeQuery
 
@@ -266,6 +449,10 @@ extension Storefront {
 				case "Article": return try Article.init(fields: fields)
 
 				case "Blog": return try Blog.init(fields: fields)
+
+				case "Cart": return try Cart.init(fields: fields)
+
+				case "CartLine": return try CartLine.init(fields: fields)
 
 				case "Checkout": return try Checkout.init(fields: fields)
 
@@ -308,7 +495,7 @@ extension Storefront {
 			}
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		open var id: GraphQL.ID {
 			return internalGetId()
 		}

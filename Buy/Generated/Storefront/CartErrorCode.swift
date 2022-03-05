@@ -1,5 +1,5 @@
 //
-//  MetafieldValueType.swift
+//  CartErrorCode.swift
 //  Buy
 //
 //  Created by Shopify.
@@ -27,16 +27,22 @@
 import Foundation
 
 extension Storefront {
-	/// Metafield value types. 
-	public enum MetafieldValueType: String {
-		/// An integer metafield. 
-		case integer = "INTEGER"
+	/// Possible error codes that can be returned by `CartUserError`. 
+	public enum CartErrorCode: String {
+		/// The input value is invalid. 
+		case invalid = "INVALID"
 
-		/// A json string metafield. 
-		case jsonString = "JSON_STRING"
+		/// Merchandise line was not found in cart. 
+		case invalidMerchandiseLine = "INVALID_MERCHANDISE_LINE"
 
-		/// A string metafield. 
-		case string = "STRING"
+		/// The input value should be less than the maximum value allowed. 
+		case lessThan = "LESS_THAN"
+
+		/// Missing discount code. 
+		case missingDiscountCode = "MISSING_DISCOUNT_CODE"
+
+		/// Missing note. 
+		case missingNote = "MISSING_NOTE"
 
 		case unknownValue = ""
 	}

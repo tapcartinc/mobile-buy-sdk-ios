@@ -38,7 +38,7 @@ extension Storefront {
 			return self
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		@discardableResult
 		open func id(alias: String? = nil) -> MediaImageQuery {
 			addField(field: "id", aliasSuffix: alias)
@@ -74,7 +74,7 @@ extension Storefront {
 	}
 
 	/// Represents a Shopify hosted image. 
-	open class MediaImage: GraphQL.AbstractResponse, GraphQLObject, Media, Node {
+	open class MediaImage: GraphQL.AbstractResponse, GraphQLObject, Media, MetafieldReference, Node {
 		public typealias Query = MediaImageQuery
 
 		internal override func deserializeValue(fieldName: String, value: Any) throws -> Any? {
@@ -127,7 +127,7 @@ extension Storefront {
 			return field(field: "alt", aliasSuffix: alias) as! String?
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		open var id: GraphQL.ID {
 			return internalGetId()
 		}

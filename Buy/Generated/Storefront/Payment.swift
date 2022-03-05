@@ -86,7 +86,7 @@ extension Storefront {
 			return self
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		@discardableResult
 		open func id(alias: String? = nil) -> PaymentQuery {
 			addField(field: "id", aliasSuffix: alias)
@@ -95,7 +95,7 @@ extension Storefront {
 
 		/// A client-side generated token to identify a payment and perform idempotent 
 		/// operations. For more information, refer to [Idempotent 
-		/// requests](https://shopify.dev/concepts/about-apis/idempotent-requests). 
+		/// requests](https://shopify.dev/api/usage/idempotent-requests). 
 		@discardableResult
 		open func idempotencyKey(alias: String? = nil) -> PaymentQuery {
 			addField(field: "idempotencyKey", aliasSuffix: alias)
@@ -282,7 +282,7 @@ extension Storefront {
 			return field(field: "errorMessage", aliasSuffix: alias) as! String?
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		open var id: GraphQL.ID {
 			return internalGetId()
 		}
@@ -293,7 +293,7 @@ extension Storefront {
 
 		/// A client-side generated token to identify a payment and perform idempotent 
 		/// operations. For more information, refer to [Idempotent 
-		/// requests](https://shopify.dev/concepts/about-apis/idempotent-requests). 
+		/// requests](https://shopify.dev/api/usage/idempotent-requests). 
 		open var idempotencyKey: String? {
 			return internalGetIdempotencyKey()
 		}

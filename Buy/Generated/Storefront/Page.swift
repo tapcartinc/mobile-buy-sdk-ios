@@ -61,7 +61,7 @@ extension Storefront {
 			return self
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		@discardableResult
 		open func id(alias: String? = nil) -> PageQuery {
 			addField(field: "id", aliasSuffix: alias)
@@ -101,6 +101,7 @@ extension Storefront {
 		///     - before: Returns the elements that come before the specified cursor.
 		///     - reverse: Reverse the order of the underlying list.
 		///
+		@available(*, deprecated, message:"The `metafields` field will be removed in the future in favor of using [aliases](https://graphql.org/learn/queries/#aliases) with the `metafield` field.\n")
 		@discardableResult
 		open func metafields(alias: String? = nil, namespace: String? = nil, first: Int32? = nil, after: String? = nil, last: Int32? = nil, before: String? = nil, reverse: Bool? = nil, _ subfields: (MetafieldConnectionQuery) -> Void) -> PageQuery {
 			var args: [String] = []
@@ -138,6 +139,15 @@ extension Storefront {
 			return self
 		}
 
+		/// The URL used for viewing the resource on the shop's Online Store. Returns 
+		/// `null` if the resource is currently not published to the Online Store sales 
+		/// channel. 
+		@discardableResult
+		open func onlineStoreUrl(alias: String? = nil) -> PageQuery {
+			addField(field: "onlineStoreUrl", aliasSuffix: alias)
+			return self
+		}
+
 		/// The page's SEO information. 
 		@discardableResult
 		open func seo(alias: String? = nil, _ subfields: (SEOQuery) -> Void) -> PageQuery {
@@ -161,18 +171,11 @@ extension Storefront {
 			addField(field: "updatedAt", aliasSuffix: alias)
 			return self
 		}
-
-		/// The url pointing to the page accessible from the web. 
-		@discardableResult
-		open func url(alias: String? = nil) -> PageQuery {
-			addField(field: "url", aliasSuffix: alias)
-			return self
-		}
 	}
 
 	/// Shopify merchants can create pages to hold static HTML content. Each Page 
 	/// object represents a custom page on the online store. 
-	open class Page: GraphQL.AbstractResponse, GraphQLObject, HasMetafields, MetafieldParentResource, Node {
+	open class Page: GraphQL.AbstractResponse, GraphQLObject, HasMetafields, MetafieldParentResource, MetafieldReference, Node, OnlineStorePublishable {
 		public typealias Query = PageQuery
 
 		internal override func deserializeValue(fieldName: String, value: Any) throws -> Any? {
@@ -221,6 +224,13 @@ extension Storefront {
 				}
 				return try MetafieldConnection(fields: value)
 
+				case "onlineStoreUrl":
+				if value is NSNull { return nil }
+				guard let value = value as? String else {
+					throw SchemaViolationError(type: Page.self, field: fieldName, value: fieldValue)
+				}
+				return URL(string: value)!
+
 				case "seo":
 				if value is NSNull { return nil }
 				guard let value = value as? [String: Any] else {
@@ -239,12 +249,6 @@ extension Storefront {
 					throw SchemaViolationError(type: Page.self, field: fieldName, value: fieldValue)
 				}
 				return GraphQL.iso8601DateParser.date(from: value)!
-
-				case "url":
-				guard let value = value as? String else {
-					throw SchemaViolationError(type: Page.self, field: fieldName, value: fieldValue)
-				}
-				return URL(string: value)!
 
 				default:
 				throw SchemaViolationError(type: Page.self, field: fieldName, value: fieldValue)
@@ -288,7 +292,7 @@ extension Storefront {
 			return field(field: "handle", aliasSuffix: alias) as! String
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		open var id: GraphQL.ID {
 			return internalGetId()
 		}
@@ -311,9 +315,12 @@ extension Storefront {
 		}
 
 		/// A paginated list of metafields associated with the resource. 
+		@available(*, deprecated, message:"The `metafields` field will be removed in the future in favor of using [aliases](https://graphql.org/learn/queries/#aliases) with the `metafield` field.\n")
 		open var metafields: Storefront.MetafieldConnection {
 			return internalGetMetafields()
 		}
+
+		@available(*, deprecated, message:"The `metafields` field will be removed in the future in favor of using [aliases](https://graphql.org/learn/queries/#aliases) with the `metafield` field.\n")
 
 		open func aliasedMetafields(alias: String) -> Storefront.MetafieldConnection {
 			return internalGetMetafields(alias: alias)
@@ -321,6 +328,17 @@ extension Storefront {
 
 		func internalGetMetafields(alias: String? = nil) -> Storefront.MetafieldConnection {
 			return field(field: "metafields", aliasSuffix: alias) as! Storefront.MetafieldConnection
+		}
+
+		/// The URL used for viewing the resource on the shop's Online Store. Returns 
+		/// `null` if the resource is currently not published to the Online Store sales 
+		/// channel. 
+		open var onlineStoreUrl: URL? {
+			return internalGetOnlineStoreUrl()
+		}
+
+		func internalGetOnlineStoreUrl(alias: String? = nil) -> URL? {
+			return field(field: "onlineStoreUrl", aliasSuffix: alias) as! URL?
 		}
 
 		/// The page's SEO information. 
@@ -348,15 +366,6 @@ extension Storefront {
 
 		func internalGetUpdatedAt(alias: String? = nil) -> Date {
 			return field(field: "updatedAt", aliasSuffix: alias) as! Date
-		}
-
-		/// The url pointing to the page accessible from the web. 
-		open var url: URL {
-			return internalGetUrl()
-		}
-
-		func internalGetUrl(alias: String? = nil) -> URL {
-			return field(field: "url", aliasSuffix: alias) as! URL
 		}
 
 		internal override func childResponseObjectMap() -> [GraphQL.AbstractResponse]  {

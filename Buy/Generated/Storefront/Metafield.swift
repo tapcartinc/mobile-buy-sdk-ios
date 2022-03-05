@@ -47,7 +47,7 @@ extension Storefront {
 			return self
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		@discardableResult
 		open func id(alias: String? = nil) -> MetafieldQuery {
 			addField(field: "id", aliasSuffix: alias)
@@ -78,7 +78,19 @@ extension Storefront {
 			return self
 		}
 
-		/// The type name of the metafield. 
+		/// Returns a reference object if the metafield definition's type is a resource 
+		/// reference. 
+		@discardableResult
+		open func reference(alias: String? = nil, _ subfields: (MetafieldReferenceQuery) -> Void) -> MetafieldQuery {
+			let subquery = MetafieldReferenceQuery()
+			subfields(subquery)
+
+			addField(field: "reference", aliasSuffix: alias, subfields: subquery)
+			return self
+		}
+
+		/// The type name of the metafield. See the list of [supported 
+		/// types](https://shopify.dev/apps/metafields/definitions/types). 
 		@discardableResult
 		open func type(alias: String? = nil) -> MetafieldQuery {
 			addField(field: "type", aliasSuffix: alias)
@@ -96,14 +108,6 @@ extension Storefront {
 		@discardableResult
 		open func value(alias: String? = nil) -> MetafieldQuery {
 			addField(field: "value", aliasSuffix: alias)
-			return self
-		}
-
-		/// Represents the metafield value type. 
-		@available(*, deprecated, message:"`valueType` is deprecated and replaced by `type` in API version 2021-07.")
-		@discardableResult
-		open func valueType(alias: String? = nil) -> MetafieldQuery {
-			addField(field: "valueType", aliasSuffix: alias)
 			return self
 		}
 	}
@@ -154,6 +158,13 @@ extension Storefront {
 				}
 				return try UnknownMetafieldParentResource.create(fields: value)
 
+				case "reference":
+				if value is NSNull { return nil }
+				guard let value = value as? [String: Any] else {
+					throw SchemaViolationError(type: Metafield.self, field: fieldName, value: fieldValue)
+				}
+				return try UnknownMetafieldReference.create(fields: value)
+
 				case "type":
 				guard let value = value as? String else {
 					throw SchemaViolationError(type: Metafield.self, field: fieldName, value: fieldValue)
@@ -171,12 +182,6 @@ extension Storefront {
 					throw SchemaViolationError(type: Metafield.self, field: fieldName, value: fieldValue)
 				}
 				return value
-
-				case "valueType":
-				guard let value = value as? String else {
-					throw SchemaViolationError(type: Metafield.self, field: fieldName, value: fieldValue)
-				}
-				return MetafieldValueType(rawValue: value) ?? .unknownValue
 
 				default:
 				throw SchemaViolationError(type: Metafield.self, field: fieldName, value: fieldValue)
@@ -201,7 +206,7 @@ extension Storefront {
 			return field(field: "description", aliasSuffix: alias) as! String?
 		}
 
-		/// Globally unique identifier. 
+		/// A globally-unique identifier. 
 		open var id: GraphQL.ID {
 			return internalGetId()
 		}
@@ -237,7 +242,18 @@ extension Storefront {
 			return field(field: "parentResource", aliasSuffix: alias) as! MetafieldParentResource
 		}
 
-		/// The type name of the metafield. 
+		/// Returns a reference object if the metafield definition's type is a resource 
+		/// reference. 
+		open var reference: MetafieldReference? {
+			return internalGetReference()
+		}
+
+		func internalGetReference(alias: String? = nil) -> MetafieldReference? {
+			return field(field: "reference", aliasSuffix: alias) as! MetafieldReference?
+		}
+
+		/// The type name of the metafield. See the list of [supported 
+		/// types](https://shopify.dev/apps/metafields/definitions/types). 
 		open var type: String {
 			return internalGetType()
 		}
@@ -262,16 +278,6 @@ extension Storefront {
 
 		func internalGetValue(alias: String? = nil) -> String {
 			return field(field: "value", aliasSuffix: alias) as! String
-		}
-
-		/// Represents the metafield value type. 
-		@available(*, deprecated, message:"`valueType` is deprecated and replaced by `type` in API version 2021-07.")
-		open var valueType: Storefront.MetafieldValueType {
-			return internalGetValueType()
-		}
-
-		func internalGetValueType(alias: String? = nil) -> Storefront.MetafieldValueType {
-			return field(field: "valueType", aliasSuffix: alias) as! Storefront.MetafieldValueType
 		}
 
 		internal override func childResponseObjectMap() -> [GraphQL.AbstractResponse]  {

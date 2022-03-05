@@ -1,5 +1,5 @@
 //
-//  MoneyV2Edge.swift
+//  CartLineEdge.swift
 //  Buy
 //
 //  Created by Shopify.
@@ -27,22 +27,22 @@
 import Foundation
 
 extension Storefront {
-	/// An auto-generated type which holds one MoneyV2 and a cursor during 
+	/// An auto-generated type which holds one CartLine and a cursor during 
 	/// pagination. 
-	open class MoneyV2EdgeQuery: GraphQL.AbstractQuery, GraphQLQuery {
-		public typealias Response = MoneyV2Edge
+	open class CartLineEdgeQuery: GraphQL.AbstractQuery, GraphQLQuery {
+		public typealias Response = CartLineEdge
 
 		/// A cursor for use in pagination. 
 		@discardableResult
-		open func cursor(alias: String? = nil) -> MoneyV2EdgeQuery {
+		open func cursor(alias: String? = nil) -> CartLineEdgeQuery {
 			addField(field: "cursor", aliasSuffix: alias)
 			return self
 		}
 
-		/// The item at the end of MoneyV2Edge. 
+		/// The item at the end of CartLineEdge. 
 		@discardableResult
-		open func node(alias: String? = nil, _ subfields: (MoneyV2Query) -> Void) -> MoneyV2EdgeQuery {
-			let subquery = MoneyV2Query()
+		open func node(alias: String? = nil, _ subfields: (CartLineQuery) -> Void) -> CartLineEdgeQuery {
+			let subquery = CartLineQuery()
 			subfields(subquery)
 
 			addField(field: "node", aliasSuffix: alias, subfields: subquery)
@@ -50,28 +50,28 @@ extension Storefront {
 		}
 	}
 
-	/// An auto-generated type which holds one MoneyV2 and a cursor during 
+	/// An auto-generated type which holds one CartLine and a cursor during 
 	/// pagination. 
-	open class MoneyV2Edge: GraphQL.AbstractResponse, GraphQLObject {
-		public typealias Query = MoneyV2EdgeQuery
+	open class CartLineEdge: GraphQL.AbstractResponse, GraphQLObject {
+		public typealias Query = CartLineEdgeQuery
 
 		internal override func deserializeValue(fieldName: String, value: Any) throws -> Any? {
 			let fieldValue = value
 			switch fieldName {
 				case "cursor":
 				guard let value = value as? String else {
-					throw SchemaViolationError(type: MoneyV2Edge.self, field: fieldName, value: fieldValue)
+					throw SchemaViolationError(type: CartLineEdge.self, field: fieldName, value: fieldValue)
 				}
 				return value
 
 				case "node":
 				guard let value = value as? [String: Any] else {
-					throw SchemaViolationError(type: MoneyV2Edge.self, field: fieldName, value: fieldValue)
+					throw SchemaViolationError(type: CartLineEdge.self, field: fieldName, value: fieldValue)
 				}
-				return try MoneyV2(fields: value)
+				return try CartLine(fields: value)
 
 				default:
-				throw SchemaViolationError(type: MoneyV2Edge.self, field: fieldName, value: fieldValue)
+				throw SchemaViolationError(type: CartLineEdge.self, field: fieldName, value: fieldValue)
 			}
 		}
 
@@ -84,13 +84,13 @@ extension Storefront {
 			return field(field: "cursor", aliasSuffix: alias) as! String
 		}
 
-		/// The item at the end of MoneyV2Edge. 
-		open var node: Storefront.MoneyV2 {
+		/// The item at the end of CartLineEdge. 
+		open var node: Storefront.CartLine {
 			return internalGetNode()
 		}
 
-		func internalGetNode(alias: String? = nil) -> Storefront.MoneyV2 {
-			return field(field: "node", aliasSuffix: alias) as! Storefront.MoneyV2
+		func internalGetNode(alias: String? = nil) -> Storefront.CartLine {
+			return field(field: "node", aliasSuffix: alias) as! Storefront.CartLine
 		}
 
 		internal override func childResponseObjectMap() -> [GraphQL.AbstractResponse]  {
