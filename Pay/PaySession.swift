@@ -339,6 +339,23 @@ extension PaySession: PKPaymentAuthorizationControllerDelegate {
         self.delegate?.paySession(self, didRequestShippingRatesFor: payPostalAddress, checkout: self.checkout, provide: { updatedCheckout, shippingRates, errors in
             
             /* ---------------------------------
+             ** Check for any errors that may be
+             ** provided from the delegate.
+             */
+            
+            if let errors = errors {
+                let result = PKPaymentRequestShippingContactUpdate(
+                    errors: errors,
+                    paymentSummaryItems: self.checkout.summaryItems(for: self.shopName),
+                    shippingMethods: []
+                )
+                result.status = .failure
+                completion(result)
+                return
+            }
+            
+            
+            /* ---------------------------------
              ** Notify the delegate that the selected
              ** address currency code does not match
              ** the code Apple Pay was initialized
@@ -365,9 +382,13 @@ extension PaySession: PKPaymentAuthorizationControllerDelegate {
              ** which indicates invalid or incomplete
              ** postal address.
              */
-            guard let updatedCheckout = updatedCheckout, !shippingRates.isEmpty, errors == nil else {
+            guard let updatedCheckout = updatedCheckout, !shippingRates.isEmpty else {
                 let result = PKPaymentRequestShippingContactUpdate(
-                    errors: errors,
+                    errors: [
+                        PKPaymentRequest.paymentShippingAddressUnserviceableError(
+                            withLocalizedDescription: "Unable to ship to selected address"
+                        ),
+                    ],
                     paymentSummaryItems: self.checkout.summaryItems(for: self.shopName),
                     shippingMethods: []
                 )
