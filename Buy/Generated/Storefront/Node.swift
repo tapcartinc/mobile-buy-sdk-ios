@@ -225,21 +225,6 @@ extension Storefront {
 			return self
 		}
 
-		/// An object with an ID field to support global identification, in accordance 
-		/// with the [Relay 
-		/// specification](https://relay.dev/graphql/objectidentification.htm#sec-Node-Interface). 
-		/// This interface is used by the 
-		/// [node](https://shopify.dev/api/admin-graphql/unstable/queries/node) and 
-		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
-		/// queries. 
-		@discardableResult
-		open func onLocation(subfields: (LocationQuery) -> Void) -> NodeQuery {
-			let subquery = LocationQuery()
-			subfields(subquery)
-			addInlineFragment(on: "Location", subfields: subquery)
-			return self
-		}
-
 		/// An object with an ID to support global identification. 
 		@discardableResult
 		open func onMailingAddress(subfields: (MailingAddressQuery) -> Void) -> NodeQuery {

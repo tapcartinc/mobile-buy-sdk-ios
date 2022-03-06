@@ -427,58 +427,6 @@ extension Storefront {
 			return self
 		}
 
-		/// Whether the product can only be purchased with a selling plan. 
-		@discardableResult
-		open func requiresSellingPlan(alias: String? = nil) -> ProductQuery {
-			addField(field: "requiresSellingPlan", aliasSuffix: alias)
-			return self
-		}
-
-		/// A list of a product's available selling plan groups. A selling plan group 
-		/// represents a selling method. For example, 'Subscribe and save' is a selling 
-		/// method where customers pay for goods or services per delivery. A selling 
-		/// plan group contains individual selling plans. 
-		///
-		/// - parameters:
-		///     - first: Returns up to the first `n` elements from the list.
-		///     - after: Returns the elements that come after the specified cursor.
-		///     - last: Returns up to the last `n` elements from the list.
-		///     - before: Returns the elements that come before the specified cursor.
-		///     - reverse: Reverse the order of the underlying list.
-		///
-		@discardableResult
-		open func sellingPlanGroups(alias: String? = nil, first: Int32? = nil, after: String? = nil, last: Int32? = nil, before: String? = nil, reverse: Bool? = nil, _ subfields: (SellingPlanGroupConnectionQuery) -> Void) -> ProductQuery {
-			var args: [String] = []
-
-			if let first = first {
-				args.append("first:\(first)")
-			}
-
-			if let after = after {
-				args.append("after:\(GraphQL.quoteString(input: after))")
-			}
-
-			if let last = last {
-				args.append("last:\(last)")
-			}
-
-			if let before = before {
-				args.append("before:\(GraphQL.quoteString(input: before))")
-			}
-
-			if let reverse = reverse {
-				args.append("reverse:\(reverse)")
-			}
-
-			let argsString: String? = args.isEmpty ? nil : "(\(args.joined(separator: ",")))"
-
-			let subquery = SellingPlanGroupConnectionQuery()
-			subfields(subquery)
-
-			addField(field: "sellingPlanGroups", aliasSuffix: alias, args: argsString, subfields: subquery)
-			return self
-		}
-
 		/// The product's SEO information. 
 		@discardableResult
 		open func seo(alias: String? = nil, _ subfields: (SEOQuery) -> Void) -> ProductQuery {
