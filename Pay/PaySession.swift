@@ -35,7 +35,7 @@ import PassKit
 /// object in the `provide` handler.
 ///
 @available(iOS 10.0, *)
-public protocol PaySessionDelegate: class {
+public protocol PaySessionDelegate: AnyObject {
 
     /// This callback is invoked if the user updates the `shippingContact` and the current address used for shipping is invalidated.
     /// You should make any necessary API calls to obtain shipping rates here and provide an array of `PayShippingRate` objects.
@@ -313,6 +313,22 @@ extension PaySession: PKPaymentAuthorizationControllerDelegate {
          ** should be enough to obtain rates.
          */
         self.delegate?.paySession(self, didRequestShippingRatesFor: payPostalAddress, checkout: self.checkout, provide: { updatedCheckout, shippingRates, errors in
+            
+            /* ---------------------------------
+             ** Check for any errors that may be
+             ** provided from the delegate.
+             */
+            
+            if let errors = errors {
+                let result = PKPaymentRequestShippingContactUpdate(
+                    errors: errors,
+                    paymentSummaryItems: self.checkout.summaryItems(for: self.shopName),
+                    shippingMethods: []
+                )
+                result.status = .failure
+                completion(result)
+                return
+            }
 
             /* ---------------------------------
              ** The delegate has an opportunity
@@ -320,9 +336,13 @@ extension PaySession: PKPaymentAuthorizationControllerDelegate {
              ** which indicates invalid or incomplete
              ** postal address.
              */
-            guard let updatedCheckout = updatedCheckout, !shippingRates.isEmpty, errors == nil else {
+            guard let updatedCheckout = updatedCheckout, !shippingRates.isEmpty else {
                 let result = PKPaymentRequestShippingContactUpdate(
-                    errors: errors,
+                    errors: [
+                        PKPaymentRequest.paymentShippingAddressUnserviceableError(
+                            withLocalizedDescription: "Unable to ship to selected address"
+                        ),
+                    ],
                     paymentSummaryItems: self.checkout.summaryItems(for: self.shopName),
                     shippingMethods: []
                 )
