@@ -354,6 +354,44 @@ class PaySessionTests: XCTestCase {
         self.wait(for: [e1, e2, expectation], timeout: 0)
     }
     
+    func testSelectShippingContactWithNewCurrency() {
+        
+        let checkout = Models.createCheckout(requiresShipping: false, currencyCode: "CAD")
+        let delegate = self.setupDelegateForMockSessionWith(checkout)
+        
+        let shippingContact  = Models.createContact(Models.createUSPostalAddress())
+        let shippingAddress  = Models.createAddress()
+        let addressCheckout  = Models.createCheckout(requiresShipping: false, shippingAddress: shippingAddress, currencyCode: "USD")
+        
+        let e1 = self.expectation(description: "")
+        delegate.didUpdateShippingAddress = { session, postalAddress, checkout, provide in
+            e1.fulfill()
+            
+            XCTAssertNil(checkout.shippingAddress)
+            
+            provide(addressCheckout)
+        }
+        
+        let e2 = self.expectation(description: "")
+        delegate.didReceiveNewCurrencyCode = { session, currencyCode, checkout in
+            e2.fulfill()
+            
+            XCTAssertEqual(checkout.currencyCode, "USD")
+        }
+        
+        let expectation = self.expectation(description: "")
+        MockAuthorizationController.invokeDidSelectShippingContact(shippingContact) { status, shippingMethods, summaryItems in
+            
+            XCTAssertEqual(status, .failure)
+            XCTAssertEqual(shippingMethods.count, 0)
+            XCTAssertEqual(summaryItems, [])
+            
+            expectation.fulfill()
+        }
+        
+        self.wait(for: [e1, e2, expectation], timeout: 0)
+    }
+    
     // ----------------------------------
     //  MARK: - Select Shipping Method -
     //

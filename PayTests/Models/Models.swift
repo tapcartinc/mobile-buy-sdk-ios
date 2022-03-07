@@ -39,7 +39,7 @@ struct Models {
         return method
     }
     
-    static func createContact() -> PKContact {
+    static func createContact(_ postalAddress: CNPostalAddress = createPostalAddress()) -> PKContact {
         let contact  = PKContact()
         contact.name = {
             var c        = PersonNameComponents()
@@ -61,6 +61,17 @@ struct Models {
         address.country    = "Canada"
         address.state      = "ON"
         address.postalCode = "M5V 2J4"
+        
+        return address.copy() as! CNPostalAddress
+    }
+    
+    static func createUSPostalAddress() -> CNPostalAddress {
+        let address        = CNMutablePostalAddress()
+        address.street     = "1417 6th St"
+        address.city       = "Santa Monica"
+        address.country    = "United States of America"
+        address.state      = "CA"
+        address.postalCode = "90401"
         
         return address.copy() as! CNPostalAddress
     }
@@ -107,10 +118,10 @@ struct Models {
     }
     
     static func createCurrency() -> PayCurrency {
-        return PayCurrency(currencyCode: "USD", countryCode: "US")
+        return PayCurrency(currencyCode: "CAD", countryCode: "CA")
     }
     
-    static func createCheckout(requiresShipping: Bool = true, giftCards: [PayGiftCard]? = nil, discount: PayDiscount? = nil, shippingDiscount: PayDiscount? = nil, shippingAddress: PayAddress? = nil, shippingRate: PayShippingRate? = nil, duties: Decimal? = nil, empty: Bool = false, hasTax: Bool = true) -> PayCheckout {
+    static func createCheckout(requiresShipping: Bool = true, giftCards: [PayGiftCard]? = nil, discount: PayDiscount? = nil, shippingDiscount: PayDiscount? = nil, shippingAddress: PayAddress? = nil, shippingRate: PayShippingRate? = nil, currencyCode: String = "CAD", duties: Decimal? = nil, empty: Bool = false, hasTax: Bool = true) -> PayCheckout {
         
         let lineItems = [
             self.createLineItem1(),
@@ -125,7 +136,7 @@ struct Models {
             shippingDiscount: shippingDiscount,
             shippingAddress:  shippingAddress,
             shippingRate:     shippingRate,
-            currencyCode:     "CAD",
+            currencyCode:     currencyCode,
             totalDuties:      duties,
             subtotalPrice:    44.0,
             needsShipping:    requiresShipping,

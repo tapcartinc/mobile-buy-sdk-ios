@@ -28,6 +28,7 @@
 
 import Foundation
 import Pay
+import PassKit.PKPaymentAuthorizationController
 
 final class MockSessionDelegate: PaySessionDelegate {
     
@@ -35,8 +36,9 @@ final class MockSessionDelegate: PaySessionDelegate {
     var didAuthorizePayment:      ((PaySession, PayAuthorization, PayCheckout, (PaySession.TransactionStatus) -> Void) -> Void)?
     var didRequestShippingRates:  ((PaySession, PayPostalAddress, PayCheckout, (PayCheckout?, [PayShippingRate]) -> Void) -> Void)?
     var didUpdateShippingAddress: ((PaySession, PayPostalAddress, PayCheckout, (PayCheckout?) -> Void) -> Void)?
+    var didReceiveNewCurrencyCode: ((PaySession, String, PayCheckout) -> Void)?
     var didFinish:                ((PaySession) -> Void)?
-    
+        
     let session: PaySession
     
     // ----------------------------------
@@ -64,6 +66,10 @@ final class MockSessionDelegate: PaySessionDelegate {
     
     func paySession(_ paySession: PaySession, didUpdateShippingAddress address: PayPostalAddress, checkout: PayCheckout, provide: @escaping (PayCheckout?) -> Void) {
         self.didUpdateShippingAddress?(paySession, address, checkout, provide)
+    }
+    
+    func paySession(_ paySession: PaySession, didReceiveNewCurrencyCode newCurrencyCode: String, checkout: PayCheckout) {
+        self.didReceiveNewCurrencyCode?(paySession, newCurrencyCode, checkout)
     }
     
     func paySessionDidFinish(_ paySession: PaySession) {
