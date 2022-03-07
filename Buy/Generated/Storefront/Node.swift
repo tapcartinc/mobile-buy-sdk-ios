@@ -233,15 +233,6 @@ extension Storefront {
 		/// [nodes](https://shopify.dev/api/admin-graphql/unstable/queries/nodes) 
 		/// queries. 
 		@discardableResult
-		open func onLocation(subfields: (LocationQuery) -> Void) -> NodeQuery {
-			let subquery = LocationQuery()
-			subfields(subquery)
-			addInlineFragment(on: "Location", subfields: subquery)
-			return self
-		}
-
-		/// An object with an ID to support global identification. 
-		@discardableResult
 		open func onMailingAddress(subfields: (MailingAddressQuery) -> Void) -> NodeQuery {
 			let subquery = MailingAddressQuery()
 			subfields(subquery)
