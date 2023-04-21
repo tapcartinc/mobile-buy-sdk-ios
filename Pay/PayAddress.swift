@@ -51,7 +51,7 @@ public struct PayPostalAddress {
     public let isPadded: Bool
     
     /// The original, non-padded zip code that was used to create the address
-    internal let originalZip: String?
+    public let originalZip: String?
 
     // ----------------------------------
     //  MARK: - Init -
@@ -79,7 +79,7 @@ public struct PayPostalAddress {
         if let zip = zip {
             
             let trimmedZip = zip.trimmingCharacters(in: .whitespacesAndNewlines)
-            if trimmedZip.count < 4 {
+            if trimmedZip.count < 5 {
                 let (zip, isPadded) = PayPostalAddress.paddedPostalCode(trimmedZip, for: countryCode)
                 self.zip      = zip
                 self.isPadded = isPadded
